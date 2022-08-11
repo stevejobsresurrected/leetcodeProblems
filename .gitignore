@@ -1,3 +1,7 @@
+.vscode
+
+/src/exes
+
 # Prerequisites
 *.d
 
