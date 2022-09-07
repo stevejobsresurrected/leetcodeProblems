@@ -11,7 +11,7 @@ using namespace std;
  * to decide which one of these two will cut the subarray shorter. As shown below, it has many variables and not look pretty. 
  */
 
-int getMaxLen(vector<int>& nums) {
+int getMaxLenV1(vector<int>& nums) {
     int result = 0;
     int cur_len = 0;
     int first_negative = 0;
@@ -43,6 +43,51 @@ int getMaxLen(vector<int>& nums) {
     }
 
     return result;
+}
+
+/**
+ * second version of getMaxLen is to keep track of two variables pos_len and neg_len
+ * pos_len is maximum length of local positive product subarray
+ * neg_len is maximum length of local negative product subarray.
+ * When encountering a positive integer, pos * pos is just greater positive number and neg * positive is just smaller negative number further from 0
+ * When encountering a negative integer, these two will swap. However, there are some edge cases to be careful of, which I failed to implement in my first trial
+ * 
+ * edge case 1 when encountering a positive number: neg_len being zero means there was not a single negative number. Thus, multiplying positive only serves to
+ * maximize the positive combo chain, rather than maximizing scale of the negative combo chain. Thus, we need to leave neg_len to zero until we encounter our
+ * first negative integer
+ * 
+ * edge case 2 when encountering a negative number: When we encounter first negatie integer of our current subarray, neg_len will be 0, thanks to the edge case 1 above
+ * When we swap pos_len and neg_len when we first encounter zero therefore, pos_len doesn't get updated to the correct value, because there was no negative value
+ * In this case, we have to start over our pos_len count. My concern was that possibility of pos_len being max_len but by that time pos_len is already compared against
+ * the max_len so it is ok. For this reason my first intuition was that if neg_len is zero, pos_len should not be changed but there was also possibility of next
+ * streak of positive numbers, separated by the negative number is greater than the current pos_len (+++-+++++++) <- pos_len will be stuck at the first 3 positives.
+ * 
+ * This is the logic I tried first but failed due to lack of implementation details. This is a retrial after referencing https://www.youtube.com/watch?v=isC1Mi4kdIA
+ */
+int getMaxLen(vector<int>& nums) {
+    int pos_len = 0;
+    int neg_len = 0;
+    int max_len = 0;
+
+    for (size_t i = 0; i < nums.size(); i++) {
+        if (nums[i] > 0) { // if elem is positive
+            pos_len++;
+            if (neg_len != 0) neg_len++; // edge case 1
+        }
+        else if (nums[i] < 0) { // if elem is negative
+            int temp = pos_len;
+            pos_len = neg_len == 0 ? 0 : 1 + neg_len; // edge case 2
+            neg_len = 1 + temp;
+        }
+        else {
+            pos_len = 0;
+            neg_len = 0;
+        }
+
+        max_len = max(max_len, pos_len);
+    }
+
+    return max_len;
 }
 
 int main() {
