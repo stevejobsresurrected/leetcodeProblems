@@ -27,7 +27,10 @@ using namespace std;
  * 
  * Time complexity: N ~ 2N
  * 
- * Final: 
+ * Final: Find maximum subarray in the array as if the array is straight. Then, find the maximum subarray around the
+ * array, by subtracting minimum subarray from array sum. In case the maximum subarray of the circular array is the two interval array, All we have to do is subtract
+ * negative section in the middle that would subtract from the circular maximum subarray wrapping the array on both sides 
+ * We compare these two maximum and select greater.
  * 
  */
 
