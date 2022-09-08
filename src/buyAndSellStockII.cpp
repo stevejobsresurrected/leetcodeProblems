@@ -80,5 +80,4 @@ int main() {
 
     cout << ":)" << endl;
     assert(total_up == maxProfit(sample));
-    
 }
